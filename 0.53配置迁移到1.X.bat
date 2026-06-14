@@ -39,7 +39,7 @@ goto HEADER
 :STANDARD
 echo.
 echo === 标准升级（C盘检测） ===
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Migrate-053to15.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Migrate-053to1X.ps1"
 echo.
 if %errorlevel% equ 0 (echo ==============================================
     echo   处理完成！启动 1.5 查看效果。
@@ -56,7 +56,7 @@ if %errorlevel% equ 0 (echo ==============================================
 :PORTABLE
 echo.
 echo === 便携版升级 ===
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Migrate-053to15.ps1" -Portable
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Migrate-053to1X.ps1" -Portable
 echo.
 if %errorlevel% equ 0 (echo ==============================================
     echo   处理完成！启动 1.5 查看效果。
@@ -73,7 +73,7 @@ if %errorlevel% equ 0 (echo ==============================================
 :DRYRUN
 echo.
 echo === 预览模式（不写入任何文件） ===
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Migrate-053to15.ps1" -DryRun
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Migrate-053to1X.ps1" -DryRun
 echo.
 echo 按任意键关闭...
 pause >nul
