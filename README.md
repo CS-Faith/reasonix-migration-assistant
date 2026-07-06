@@ -1,6 +1,14 @@
 # Reasonix 配置迁移升级助手
 
-将旧版 Reasonix 0.53 的对话记录、MCP 配置、记忆、Skill 完整迁移到新版 1.X。
+> **Upgrading Reasonix should not mean losing your data.** This tool migrates conversations, MCP config, memories, and skills from 0.53 to 1.X — without manual reconstruction.
+
+将旧版 Reasonix 0.53 的配置完整迁移到新版 1.X，不丢对话、不丢记忆。
+
+---
+
+## Next step
+
+Want multi-perspective AI discussions from your migrated history? → [conversation-council](https://github.com/CS-Faith/conversation-council)
 
 ---
 
