@@ -1,233 +1,82 @@
-# Reasonix 配置迁移升级助手
+﻿# Reasonix 配置迁移升级助手
 
-> **Upgrading Reasonix should not mean losing your data.** This tool migrates conversations, MCP config, memories, and skills from 0.53 to 1.X — without manual reconstruction.
+> 升级 Reasonix 0.53 → 1.X 不是「重新安装」，是**搬家**。Migration Assistant 把旧版的对话、MCP、记忆、Skill——一次性搬到新版，无需手动重建。
 
-将旧版 Reasonix 0.53 的配置完整迁移到新版 1.X，不丢对话、不丢记忆。
-
----
-
-## Next step
-
-Want multi-perspective AI discussions from your migrated history? → [conversation-council](https://github.com/CS-Faith/conversation-council)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Reasonix](https://img.shields.io/badge/Reasonix-Ecosystem-58a6ff)](https://github.com/CS-Faith/reasonix-ecosystem)
 
 ---
 
-## 能做什么
+## 一句话定位
 
-Reasonix 从 0.5X 升级到 1.X 时，数据结构发生了变化，旧版数据无法直接被新版识别。本工具自动完成以下迁移：
-
-| 数据类型 | 迁移方式 |
-|---------|------|
-| MCP 配置 | JSON 格式 → TOML `[[plugins]]` 格式 |
-| 对话记录 | 重命名 + 补全四件套（jsonl / meta / telemetry / ckpt） |
-| 运行指标 | token 用量、缓存命中率、费用、依赖文件 |
-| 记忆 | `memory/` → `projects/<slug>/memory/` |
-| Skill | 新版 Reasonix 原生支持，无需额外处理 |
+| 升级前 | 升级后 |
+|--------|--------|
+| Reasonix 0.53 + 数百条对话 + MCP + Skill + 记忆 | Reasonix 1.X + **全部数据完整迁移** |
 
 ---
 
-## 使用方法
+## 安全机制
 
-本工具支持两种升级场景：
+- **自动备份**：迁移前自动将旧配置备份到同一目录下的 `.backup/` 文件夹
+- **不覆盖**：不会删除或覆盖任何旧版文件
+- **可逆**：需要时可以从 `.backup/` 恢复
+
+---
+
+## 能迁移什么？
+
+| 数据类型 | 0.53 格式 | 1.X 格式 | 迁移方式 |
+|---------|----------|---------|---------|
+| MCP 配置 | JSON | TOML `[[plugins]]` | 自动转换 |
+| 对话记录 | jsonl / meta / telemetry / ckpt | 新版四件套 | 重命名 + 补全 |
+| 运行指标 | token 用量、缓存命中率、费用 | 新版 metrics | 字段映射 |
+| 记忆 | `memory/` 目录 | `projects/<slug>/memory/` | 按 slug 重组 |
+| Skill | 全套文件夹 | 新版原生支持 | 直接拷贝 |
+
+---
+
+## 两步升级
+
+1. 安装 Reasonix 1.X，启动一次
+2. 双击 `0.53配置迁移到1.X.bat` → 选择模式 → 完成
+
+```bash
+# 预览模式（不实际迁移）
+0.53配置迁移到1.X.bat --preview
+```
+
+---
+
+## 支持两种场景
 
 ### 场景一：标准安装版升级（C 盘）
-
 适用于 Reasonix 安装在 C 盘的标准用户。
 
-1. 确保新版 Reasonix（1.X）已安装并至少启动过一次
-2. 双击 `0.53配置迁移到1.X.bat`，选择 `[1]` 标准升级
-3. 启动新版 Reasonix，点击「历史对话」查看迁移的会话
-
 ### 场景二：PortaKit 便携版升级（U 盘 / 同步盘）
-
-适用于使用 [PortaKit](https://github.com/CS-Faith/reasonix-portakit) 将 Reasonix 放在 U 盘或同步盘上的用户。
-
-1. 将 `0.53配置迁移到1.X.bat` 和 `Migrate-053to1X.ps1` 复制到便携版 Reasonix 根目录
-2. 在便携版目录内双击 bat，选择 `[2]` 便携版升级
-3. 用 PortaKit for 1.X 的 `启动Reasonix.bat` 启动新版，查看迁移的会话
-
-### 预览模式
-
-选择 `[3]` 预览迁移内容，不实际写入任何文件。建议第一次先预览，确认无误后再执行。
+适用于使用 [PortaKit](https://github.com/CS-Faith/reasonix-portakit) 将 Reasonix 放在便携设备上的用户。将 bat 和 ps1 复制到便携版根目录运行。
 
 ---
 
-## 迁移效果
+## FAQ
 
-- ✅ 侧边栏不受影响，干净的迁移体验
-- ✅ 历史对话列表显示全部迁移会话
-- ✅ 每条会话保留原始对话标题
-- ✅ 「打开会话」可继续未完成的对话
-- ✅ 对话指标（token 用量、费用等）完整迁移
-- ✅ 迁移前自动备份，出问题可以安全回滚
-- ✅ 重复运行不会重复迁移已有文件，安全幂等
+**Q: 迁移会覆盖我的新版 1.X 配置吗？**
+A: 不会。Migration Assistant 只读取旧版数据并合并到新版结构中。
 
----
+**Q: 迁移失败了怎么办？**
+A: 所有操作前已自动备份到 `.backup/` 目录。可以从备份恢复。
 
-## 注意事项
-
-- 迁移前会自动备份原始数据，请确保有足够磁盘空间
-- MCP 配置仅在新版 `config.toml` 尚无 `[[plugins]]` 时自动写入，已有配置不会被覆盖
-- 重复运行安全——已迁移的会话会被自动跳过
-- Tab 标题可能显示 "Global"，这是新版 Reasonix 的已知限制，不影响正常使用
+**Q: 迁移后旧版数据会被删除吗？**
+A: 不会。所有旧版文件保持原样，您可以手动确认安全后再清理。
 
 ---
 
-## 完整升级链条
+## Next Step
 
-如果你同时使用 PortaKit 实现便携，完整升级流程如下：
+迁移完了，想让 Reasonix 跟随 U 盘走？ → [**Portakit**](https://github.com/CS-Faith/reasonix-portakit) 让新版 Reasonix 也变得便携
 
-```
-旧版 0.5X + PortaKit for 0.5X（便携）
-         │
-         ▼  运行本工具（场景二）
-新版 1.X + PortaKit for 1.X（便携）
-```
-
-搭配 [PortaKit](https://github.com/CS-Faith/reasonix-portakit)，可以实现从 0.5X 便携版到 1.X 便携版的无缝衔接。
-
----
-
-## 文件结构
-
-```
-├── 0.53配置迁移到1.X.bat     ← 入口，双击运行
-├── Migrate-053to1X.ps1        ← 核心迁移脚本
-├── README.md                  ← 本文件
-├── 技术实现.md                 ← 技术细节文档
-└── 研发纪实.md                 ← 踩坑记录
-```
-
----
-
-## 依赖
-
-- Windows PowerShell 5.1+
-- 无需管理员权限
-- 无需网络连接
-
----
-
-## 许可
-
-MIT License
-
----
-
-# Reasonix Configuration Migration Assistant
-
-Migrate legacy Reasonix 0.53 data — conversations, MCP config, memories, and skills — to the latest 1.X version.
-
----
-
-## What It Does
-
-When upgrading Reasonix from 0.5X to 1.X, the data format changes and legacy data is not recognized by the new version. This tool automates the migration:
-
-| Data Type | Migration Method |
-|-----------|-----------------|
-| MCP Config | JSON → TOML `[[plugins]]` format |
-| Conversations | Rename + four-file bundle (jsonl / meta / telemetry / ckpt) |
-| Metrics | Token usage, cache hit rate, cost, dependency files |
-| Memories | `memory/` → `projects/<slug>/memory/` |
-| Skills | Supported natively in 1.X — no extra processing needed |
-
----
-
-## Usage
-
-Two upgrade scenarios are supported:
-
-### Scenario 1: Standard C-drive Upgrade
-
-For users with Reasonix installed on the C: drive.
-
-1. Ensure Reasonix 1.X is installed and has been launched at least once
-2. Run `0.53配置迁移到1.X.bat` and choose `[1]` Standard Upgrade
-3. Launch Reasonix 1.X and check the History panel
-
-### Scenario 2: PortaKit Portable Upgrade (USB / Sync Disk)
-
-For users running Reasonix from a portable drive via [PortaKit](https://github.com/CS-Faith/reasonix-portakit).
-
-1. Copy `0.53配置迁移到1.X.bat` and `Migrate-053to1X.ps1` to the portable Reasonix root
-2. Run the bat from the portable directory and choose `[2]` Portable Upgrade
-3. Launch Reasonix using PortaKit for 1.X's `启动Reasonix.bat` and check History
-
-### Preview Mode
-
-Choose `[3]` to preview the migration without writing any files. Recommended for a first run.
-
----
-
-## Result
-
-- ✅ Sidebar stays clean — non-disruptive migration
-- ✅ All migrated sessions appear in the History panel
-- ✅ Original conversation titles preserved
-- ✅ "Open Session" allows resuming unfinished conversations
-- ✅ Conversation metrics (token usage, cost, etc.) fully migrated
-- ✅ Auto-backup before migration for safe rollback
-- ✅ Idempotent — safe to run multiple times
-
----
-
-## Notes
-
-- Pre-migration backup is automatic; ensure sufficient disk space
-- MCP config is only written to `config.toml` if no `[[plugins]]` section exists yet
-- Already-migrated sessions are automatically skipped on repeat runs
-- Tab titles may show "Global" — a known 1.X limitation, does not affect normal use
-
----
-
-## Full Upgrade Chain
-
-If you also use PortaKit for portability, here's the complete upgrade flow:
-
-```
-Legacy 0.5X + PortaKit for 0.5X (portable)
-         │
-         ▼  Run this tool (Scenario 2)
-New 1.X + PortaKit for 1.X (portable)
-```
-
-Combined with [PortaKit](https://github.com/CS-Faith/reasonix-portakit), you get a seamless upgrade from portable 0.5X to portable 1.X.
-
----
-
-## File Structure
-
-```
-├── 0.53配置迁移到1.X.bat     ← Entry, double-click to run
-├── Migrate-053to1X.ps1        ← Core migration script
-├── README.md                  ← This file
-├── 技术实现.md                 ← Technical details
-└── 研发纪实.md                 ← Lessons learned
-```
-
----
-
-## Requirements
-
-- Windows PowerShell 5.1+
-- No admin privileges required
-- No network connection required
+想在新版里使用历史会话讨论？ → [**Conversation Council**](https://github.com/CS-Faith/conversation-council)
 
 ---
 
 ## License
-
-MIT License
-
-
----
-
-## 🔗 相关项目
-
-| 项目 | 描述 | 链接 |
-|------|------|------|
-| **reasonix-portakit** | 便携工具箱 | [CS-Faith/reasonix-portakit](https://github.com/CS-Faith/reasonix-portakit) |
-| **knowledge-cleanup** | 知识库查重清理 | [CS-Faith/knowledge-cleanup](https://github.com/CS-Faith/knowledge-cleanup) |
-| **llm-wiki-pipeline** | 知识库构建流水线 | [CS-Faith/llm-wiki-pipeline](https://github.com/CS-Faith/llm-wiki-pipeline) |
-
+MIT © 2026 [CS-Faith](https://cs-faith.github.io)
