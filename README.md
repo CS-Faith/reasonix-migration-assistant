@@ -1,6 +1,6 @@
 ﻿# Reasonix 配置迁移升级助手
 
-> 升级 Reasonix 0.53 → 1.X 不是「重新安装」，是**搬家**。Migration Assistant 把旧版的对话、MCP、记忆、Skill——一次性搬到新版，无需手动重建。
+> 告别 Reasonix 升级失忆症：一条命令，对话、技能、记忆全带走。旧版数据一键迁移到新版，无需手动重建。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Reasonix](https://img.shields.io/badge/Reasonix-Ecosystem-58a6ff)](https://github.com/CS-Faith/reasonix-ecosystem)
